@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<title></title></title>
+<title>Сюрприз для тебе! 💖</title>
 <style>
     body {
         margin: 0;
@@ -16,55 +16,64 @@
         font-family: Arial, sans-serif;
     }
 
+    /* Кнопка музики в куті */
+    #musicToggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 100;
+        width: 45px;
+        height: 45px;
+        background: #fff0f5;
+        border: 2px solid #ff6699;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
     img, video {
         max-width: 90%;
-        max-height: 90%;
+        max-height: 85vh;
         border-radius: 15px;
-        transition: opacity 1s ease-in-out, transform 0.3s ease, box-shadow 0.3s ease;
+        transition: opacity 0.8s ease-in-out, transform 0.3s ease;
         cursor: pointer;
     }
 
-    /* Пульсуюча анімація для першої картинки */
+    /* Пульсація для першого фото, щоб було зрозуміло, що треба тиснути */
     #firstImage {
-        animation: pulse 1.5s infinite;
-    }
-
-    /* Пульсуюча анімація для другої картинки */
-    #secondImage {
-        animation: pulse 1.5s infinite;
+        animation: pulse 1.5s infinite ease-in-out;
     }
 
     @keyframes pulse {
         0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
+        50% { transform: scale(1.03); }
         100% { transform: scale(1); }
     }
 
-    /* Ефект натискання */
-    #firstImage:active, #secondImage:active {
-        transform: scale(0.95);
-        box-shadow: 0 0 20px rgba(255,102,153,0.7);
+    #firstImage:active {
+        transform: scale(0.98);
     }
 </style>
 </head>
 <body>
 
-<!-- Перша картинка -->
-<img id="firstImage" src="pet.jpg" alt="Перша картинка">
+<button id="musicToggle" title="Увімкнути/Вимкнути музику">🎵</button>
 
-<!-- Відео -->
-<video id="videoPlayer" width="320" controls style="display:none; opacity:0;">
+<img id="firstImage" src="pet.jpg" alt="Натисни на мене">
+
+<video id="videoPlayer" width="320" style="display:none; opacity:0;" playsinline>
     <source src="video.mp4" type="video/mp4">
     Ваш браузер не підтримує відео.
 </video>
 
-<!-- Друга картинка -->
-<img id="secondImage" src="hanil.jpg" alt="Друга картинка" style="display:none; opacity:0;">
+<img id="secondImage" src="hanil.png" alt="Друга картинка" style="display:none; opacity:0;">
 
-<!-- Музика -->
 <audio id="bgMusic" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
-  Ваш браузер не підтримує аудіо.
 </audio>
 
 <script>
@@ -72,33 +81,51 @@ const first = document.getElementById("firstImage");
 const video = document.getElementById("videoPlayer");
 const second = document.getElementById("secondImage");
 const music = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicToggle");
 
-// Натискання на першу картинку запускає сюрприз
-first.addEventListener("click", ()=>{
-    music.play().catch(()=>{}); // спроба запустити музику
-    first.style.transition = "opacity 1s ease";
+// 1. Керування музикою через кнопку в куті
+musicBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // щоб клік по кнопці не спрацював як клік по фону
+    if (music.paused) {
+        music.play();
+        musicBtn.textContent = "🔊";
+    } else {
+        music.pause();
+        musicBtn.textContent = "🎵";
+    }
+});
+
+// 2. Головна дія при натисканні на ФОТО
+first.addEventListener("click", () => {
+    // Вмикаємо музику (вона не зупиниться)
+    music.play().catch(() => { console.log("Музика чекає взаємодії"); });
+    musicBtn.textContent = "🔊";
+
+    // Анімація зникнення фото
     first.style.opacity = 0;
 
-    setTimeout(()=>{
+    setTimeout(() => {
         first.style.display = "none";
 
-        // Показуємо відео
+        // Показуємо і запускаємо відео
         video.style.display = "block";
-        setTimeout(()=>{
+        setTimeout(() => {
             video.style.opacity = 1;
             video.play();
         }, 100);
-    }, 500);
+    }, 800);
 });
 
-// Після закінчення відео показуємо другу картинку з ефектом
-video.addEventListener("ended", ()=>{
+// 3. Коли відео закінчується — показуємо останнє фото
+video.addEventListener("ended", () => {
     video.style.opacity = 0;
-    setTimeout(()=>{
+    setTimeout(() => {
         video.style.display = "none";
         second.style.display = "block";
-        setTimeout(()=>{ second.style.opacity = 1; }, 100);
-    }, 500);
+        setTimeout(() => { 
+            second.style.opacity = 1; 
+        }, 100);
+    }, 800);
 });
 </script>
 
