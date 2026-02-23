@@ -34,6 +34,11 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         z-index: 100;
         margin-left: 5px;
+        transition: transform 0.2s;
+    }
+
+    .musicBtn:hover {
+        transform: scale(1.1);
     }
 
     #music1 { right: 80px; }
@@ -64,8 +69,8 @@
 </head>
 <body>
 
-<button id="music1" class="musicBtn" title="Пісня 1">1</button>
-<button id="music2" class="musicBtn" title="Пісня 2">2</button>
+<button id="music1" class="musicBtn" title="Пісня 1">🎵</button>
+<button id="music2" class="musicBtn" title="Пісня 2">🎵</button>
 
 <img id="firstImage" src="numaki.png" alt="Натисни на мене">
     
@@ -100,9 +105,13 @@ function playMusic(selected) {
     if(selected === 1){
         music2.pause();
         music1.play();
+        btn1.textContent = "🔊";
+        btn2.textContent = "🎵";
     } else if(selected === 2){
         music1.pause();
         music2.play();
+        btn2.textContent = "🔊";
+        btn1.textContent = "🎵";
     }
 }
 
@@ -113,6 +122,7 @@ btn1.addEventListener("click", (e) => {
         playMusic(1);
     } else {
         music1.pause();
+        btn1.textContent = "🎵";
     }
 });
 
@@ -122,6 +132,7 @@ btn2.addEventListener("click", (e) => {
         playMusic(2);
     } else {
         music2.pause();
+        btn2.textContent = "🎵";
     }
 });
 
@@ -157,4 +168,4 @@ video.addEventListener("ended", () => {
 </script>
 
 </body>
-    </html>
+</html>
