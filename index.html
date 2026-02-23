@@ -69,6 +69,7 @@
 </head>
 <body>
 
+<!-- Кнопки з іконкою звуку -->
 <button id="music1" class="musicBtn" title="Пісня 1">🎵</button>
 <button id="music2" class="musicBtn" title="Пісня 2">🎵</button>
 
@@ -81,6 +82,7 @@
 
 <img id="secondImage" src="hanil.png" alt="Друга картинка" style="display:none; opacity:0;">
 
+<!-- Аудіо файли з правильними іменами -->
 <audio id="bgMusic1" loop preload="auto">
   <source src="music1.mp3" type="audio/mpeg">
 </audio>
@@ -138,8 +140,12 @@ btn2.addEventListener("click", (e) => {
 
 // Головна дія при натисканні на ФОТО
 first.addEventListener("click", () => {
-    music1.play().catch(()=>{});
-    music2.play().catch(()=>{});
+    // Автоматично включає обидві пісні, щоб працювала остання обрана кнопка
+    if (!music1.paused || !music2.paused) {
+        // якщо якась музика вже грає — нічого не міняємо
+    } else {
+        music1.play().catch(()=>{}); // на випадок, якщо користувач ще не взаємодіяв
+    }
 
     first.style.opacity = 0;
 
@@ -168,4 +174,4 @@ video.addEventListener("ended", () => {
 </script>
 
 </body>
-</html>
+    </html>
