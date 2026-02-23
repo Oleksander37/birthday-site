@@ -14,14 +14,13 @@
         height: 100vh;
         overflow: hidden;
         font-family: Arial, sans-serif;
+        flex-direction: column;
     }
 
-    /* Кнопка музики в куті */
-    #musicToggle {
+    /* Кнопки музики в куті */
+    .musicBtn {
         position: fixed;
         top: 20px;
-        right: 20px;
-        z-index: 100;
         width: 45px;
         height: 45px;
         background: #fff0f5;
@@ -33,7 +32,12 @@
         justify-content: center;
         font-size: 20px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        z-index: 100;
+        margin-left: 5px;
     }
+
+    #music1 { right: 80px; }
+    #music2 { right: 20px; }
 
     img, video {
         max-width: 90%;
@@ -43,7 +47,6 @@
         cursor: pointer;
     }
 
-    /* Пульсація для першого фото, щоб було зрозуміло, що треба тиснути */
     #firstImage {
         animation: pulse 1.5s infinite ease-in-out;
     }
@@ -61,7 +64,8 @@
 </head>
 <body>
 
-<button id="musicToggle" title="Увімкнути/Вимкнути музику">🎵</button>
+<button id="music1" class="musicBtn" title="Пісня 1">1</button>
+<button id="music2" class="musicBtn" title="Пісня 2">2</button>
 
 <img id="firstImage" src="numaki.png" alt="Натисни на мене">
     
@@ -72,7 +76,11 @@
 
 <img id="secondImage" src="hanil.png" alt="Друга картинка" style="display:none; opacity:0;">
 
-<audio id="bgMusic" loop preload="auto">
+<audio id="bgMusic1" loop preload="auto">
+  <source src="music1.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="bgMusic2" loop preload="auto">
   <source src="music2.mp3" type="audio/mpeg">
 </audio>
 
@@ -80,34 +88,53 @@
 const first = document.getElementById("firstImage");
 const video = document.getElementById("videoPlayer");
 const second = document.getElementById("secondImage");
-const music = document.getElementById("bgMusic");
-const musicBtn = document.getElementById("musicToggle");
 
-// 1. Керування музикою через кнопку в куті
-musicBtn.addEventListener("click", (e) => {
-    e.stopPropagation(); // щоб клік по кнопці не спрацював як клік по фону
-    if (music.paused) {
-        music.play();
-        musicBtn.textContent = "🔊";
+const music1 = document.getElementById("bgMusic1");
+const music2 = document.getElementById("bgMusic2");
+
+const btn1 = document.getElementById("music1");
+const btn2 = document.getElementById("music2");
+
+// Функція для запуску певної музики та зупинки іншої
+function playMusic(selected) {
+    if(selected === 1){
+        music2.pause();
+        music1.play();
+    } else if(selected === 2){
+        music1.pause();
+        music2.play();
+    }
+}
+
+// Події на кнопки
+btn1.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if(music1.paused){
+        playMusic(1);
     } else {
-        music.pause();
-        musicBtn.textContent = "🎵";
+        music1.pause();
     }
 });
 
-// 2. Головна дія при натисканні на ФОТО
-first.addEventListener("click", () => {
-    // Вмикаємо музику (вона не зупиниться)
-    music.play().catch(() => { console.log("Музика чекає взаємодії"); });
-    musicBtn.textContent = "🔊";
+btn2.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if(music2.paused){
+        playMusic(2);
+    } else {
+        music2.pause();
+    }
+});
 
-    // Анімація зникнення фото
+// Головна дія при натисканні на ФОТО
+first.addEventListener("click", () => {
+    music1.play().catch(()=>{});
+    music2.play().catch(()=>{});
+
     first.style.opacity = 0;
 
     setTimeout(() => {
         first.style.display = "none";
 
-        // Показуємо і запускаємо відео
         video.style.display = "block";
         setTimeout(() => {
             video.style.opacity = 1;
@@ -116,7 +143,7 @@ first.addEventListener("click", () => {
     }, 800);
 });
 
-// 3. Коли відео закінчується — показуємо останнє фото
+// Коли відео закінчується — показуємо останнє фото
 video.addEventListener("ended", () => {
     video.style.opacity = 0;
     setTimeout(() => {
@@ -130,4 +157,4 @@ video.addEventListener("ended", () => {
 </script>
 
 </body>
-</html>
+    </html>
